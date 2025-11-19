@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <title>Rastreio da Encomenda - Pulseira Pandora Elegance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --primary: #e6007e;          /* cor tipo Pandora */
+            --primary-light: #ffb3da;
+            --primary-dark: #b0005f;
+            --bg: #f4f4f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #777777;
+            --border-soft: #e1e1e8;
+            --success: #4caf50;
+            --warning: #ffb300;
+            --danger: #e53935;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background: radial-gradient(circle at top, #ffffff 0, #f4f4f6 45%, #e9e9f0 100%);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 30px auto 50px;
+            padding: 0 16px;
+        }
+
+        /* TOPO / HEADER */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+            color: var(--primary);
+            background: #fff;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-text span:first-child {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .brand-text span:last-child {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* CARTÕES GERAIS */
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-soft);
+        }
+
+        /* RESUMO & STATUS GERAL */
+        .top-grid {
+            display: grid;
+            grid-template-columns: 2.3fr 1.7fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 840px) {
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-right {
+                text-align: left;
+            }
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .order-header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .status-badge {
+            align-self: flex-start;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            border: 1px solid var(--primary-light);
+            background: #fff0f7;
+            color: var(--primary-dark);
+        }
+
+        .status-badge[data-status="preparacao"] {
+            border-color: var(--warning);
+            background: #fff7e0;
+            color: #a86a00;
+        }
+
+        .status-badge[data-status="transito"] {
+            border-color: #42a5f5;
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .status-badge[data-status="entregue"] {
+            border-color: var(--success);
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .order-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .order-meta div strong {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2px;
+            color: #999;
+        }
+
+        /* PRODUTO */
+        .product-block {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .product-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            border: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .product-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .product-meta span + span::before {
+            content: "•";
+            margin: 0 6px;
+        }
+
+        /* INFO DESTINO & PAGAMENTO */
+        .info-list {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .info-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-group-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            color: var(--text-main);
+        }
+
+        .muted {
+            color: var(--text-muted);
+        }
+
+        /* ESTIMATIVA E AÇÃO */
+        .delivery-estimate {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .estimate-main {
+            font-size: 13px;
+        }
+
+        .estimate-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .estimate-date {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .estimate-window {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .estimate-bar-wrapper {
+            margin-top: 4px;
+        }
+
+        .estimate-bar {
+            position: relative;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: #eee;
+            overflow: hidden;
+        }
+
+        .estimate-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 45%; /* ajusta se quiser simular mais ou menos progresso */
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .delivery-note {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .actions {
+            margin-top: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border-soft);
+            color: var(--text-main);
+        }
+
+        .btn-ghost:hover {
+            background: #f7f7fb;
+        }
+
+        /* RASTREIO DETALHADO */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tracking-code {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .tracking-code strong {
+            color: var(--text-main);
+        }
+
+        /* TIMELINE VERTICAL */
+        .timeline {
+            position: relative;
+            padding-left: 18px;
+            margin: 8px 0 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 14px;
+            margin-bottom: 14px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-light);
+            background: #fff;
+        }
+
+        .timeline-dot.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .timeline-dot.done {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .timeline-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .timeline-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .timeline-extra {
+            font-size: 11px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 4px;
+        }
+
+        /* TABELA DE EVENTOS RESUMIDA */
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .events-table th,
+        .events-table td {
+            padding: 6px 4px;
+        }
+
+        .events-table th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #999;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .events-table tr + tr td {
+            border-top: 1px solid #f0f0f4;
+        }
+
+        .events-table td:nth-child(1) {
+            white-space: nowrap;
+        }
+
+        .event-status {
+            font-weight: 500;
+        }
+
+        .badge-small {
+            display: inline-flex;
+            padding: 1px 6px;
+            border-radius: 999px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            border: 1px solid #c8e6c9;
+            background: #edf7ed;
+            color: #2e7d32;
+        }
+
+        .badge-small.pending {
+            border-color: #ffe0b2;
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .badge-small.info {
+            border-color: #bbdefb;
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* LEGENDA */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.done {
+            background: var(--success);
+        }
+
+        .legend-dot.active {
+            background: var(--primary);
+        }
+
+        .legend-dot.pending {
+            background: #e0e0e0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- TOPO -->
+    <header class="header">
+        <div class="brand">
+            <div class="brand-logo">P</div>
+            <div class="brand-text">
+                <span>PANDORA</span>
+                <span>Rastreio da encomenda</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div>Centro de Apoio ao Cliente: <strong>800 000 000</strong></div>
+            <div>ID de encomenda: <strong>#PN-2025-117459</strong></div>
+        </div>
+    </header>
+
+    <!-- RESUMO DA ENCOMENDA & ESTIMATIVA -->
+    <section class="top-grid">
+        <!-- Lado esquerdo: resumo -->
+        <div class="card">
+            <div class="order-header">
+                <h1>Resumo da encomenda</h1>
+                <span class="status-badge" data-status="preparacao">
+                    Em separação no armazém
+                </span>
+            </div>
+
+            <div class="order-meta">
+                <div>
+                    <strong>Data da compra</strong>
+                    17/11/2025 às 20:00
+                </div>
+                <div>
+                    <strong>Método de envio</strong>
+                    Expresso 24–48h (Portugal Continental)
+                </div>
+                <div>
+                    <strong>Estado de pagamento</strong>
+                    Pagamento aprovado
+                </div>
+            </div>
+
+            <div class="product-block">
+                <div class="product-image" aria-hidden="true">
+                    💎
+                </div>
+                <div class="product-details">
+                    <div class="product-title">Pulseira Pandora Elegance – cor prateada</div>
+                    <div class="product-sub">Tamanho 18 cm • Coleção 2025</div>
+                    <div class="product-meta">
+                        <span>Qtd: 1</span>
+                        <span>Ref. interna: PND-ELG-18S</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-list" style="margin-top: 12px;">
+                <div>
+                    <div class="info-group-title">Enviar para</div>
+                    <div class="info-value">
+                        João Silva<br>
+                        Rua das Flores, nº 25, 3º Esq.<br>
+                        1000-000 Lisboa, Portugal<br>
+                        <span class="muted">Tel: +351 912 345 678</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="info-group-title">Pagamento</div>
+                    <div class="info-value">
+                        Cartão VISA terminado em •••• 4821<br>
+                        <span class="muted">Total: 79,00 € (IVA incluído)</span><br>
+                        <span class="muted">Fatura eletrónica enviada por email</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lado direito: estimativa entrega + ações -->
+        <div class="card">
+            <div class="delivery-estimate">
+                <div class="estimate-main">
+                    <div class="estimate-label">Data estimada de entrega</div>
+                    <div class="estimate-date">20–21 novembro 2025</div>
+                    <div class="estimate-window">
+                        Entrega prevista em dias úteis, entre as <strong>09:00</strong> e as <strong>19:00</strong>.
+                    </div>
+                </div>
+
+                <div class="estimate-bar-wrapper">
+                    <div class="estimate-bar" aria-hidden="true">
+                        <div class="estimate-bar-fill"></div>
+                    </div>
+                    <div class="delivery-note">
+                        A encomenda já foi confirmada e paga. Assim que for entregue à transportadora,
+                        o estado será atualizado em tempo quase real.
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary">
+                        🔄 Atualizar estado
+                    </button>
+                    <button class="btn btn-ghost">
+                        ❓ Ajuda com esta encomenda
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RASTREIO DETALHADO + EVENTOS -->
+    <section class="main-grid">
+        <!-- Timeline -->
+        <div class="card">
+            <div class="card-title">
+                <span>Linhas do tempo da encomenda</span>
+                <span class="tracking-code">
+                    Código de rastreio: <strong>PX-45912789-PT</strong>
+                </span>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot done"></div>
+                    <div class="timeline-title">Pedido confirmado</div>
+                    <div class="timeline-meta">17/11/2025 • 20:00 • Loja Online Pandora</div>
+                    <div class="timeline-extra">Recebemos a sua encomenda e começámos a processá-la.</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot done"></div>
+                    <div class="timeline-title">Pagamento aprovado</div>
+                    <div class="timeline-meta">17/11/2025 • 20:05 • Pagamento por cartão de crédito</div>
+                    <div class="timeline-extra">Transação validada com sucesso pelo seu banco.</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot active"></div>
+                    <div class="timeline-title">Em separação no armazém</div>
+                    <div class="timeline-meta">Atualizado: 19/11/2025 • 09:12 • Armazém Lisboa</div>
+                    <div class="timeline-extra">
+                        A sua pulseira está a ser embalada e preparada para expedição.
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-title">Despachado para transportadora</div>
+                    <div class="timeline-meta muted">Próxima etapa • Previsto: 19/11/2025 ao final do dia</div>
+                    <div class="timeline-extra">
+                        Irá receber um SMS/email com o link de rastreio da transportadora.
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-title">Em trânsito</div>
+                    <div class="timeline-meta muted">Ainda não iniciado</div>
+                    <div class="timeline-extra">
+                        A encomenda estará a caminho do centro de distribuição da sua área.
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-title">Out for delivery</div>
+                    <div class="timeline-meta muted">Ainda não iniciado</div>
+                    <div class="timeline-extra">
+                        O estafeta sairá para entrega nesse dia. Recomenda-se ter alguém disponível na morada.
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-title">Entregue</div>
+                    <div class="timeline-meta muted">Ainda não entregue</div>
+                    <div class="timeline-extra">
+                        A assinatura (digital ou física) poderá ser consultada neste painel após a entrega.
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-dot done"></span> Concluído
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot active"></span> Etapa atual
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot pending"></span> Próximas etapas
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de eventos -->
+        <div class="card">
+            <div class="card-title">
+                <span>Movimentação recente</span>
+            </div>
+
+            <table class="events-table" aria-label="Histórico de eventos da encomenda">
+                <thead>
+                <tr>
+                    <th>Data / Hora</th>
+                    <th>Local</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>19/11/2025 • 09:12</td>
+                    <td>Armazém Lisboa</td>
+                    <td>
+                        <span class="event-status">Em separação no armazém</span><br>
+                        <span class="badge-small pending">Preparação</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>17/11/2025 • 20:05</td>
+                    <td>Plataforma de Pagamento</td>
+                    <td>
+                        <span class="event-status">Pagamento aprovado</span><br>
+                        <span class="badge-small">Confirmado</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>17/11/2025 • 20:00</td>
+                    <td>Loja Online Pandora</td>
+                    <td>
+                        <span class="event-status">Pedido confirmado</span><br>
+                        <span class="badge-small info">Novo pedido</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top:10px; font-size:11px; color:var(--text-muted);">
+                Nota: Alguns eventos podem demorar até 30 minutos a aparecer neste painel após ocorrerem na transportadora.
+                Para informação mais detalhada, utilize o código de rastreio no site da transportadora parceira.
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
